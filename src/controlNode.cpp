@@ -3,7 +3,7 @@
 #include <string>
 #include <fstream>
 #include <vector>
-#include <utility> // std::pair
+#include <utility>
 
 #define CLOCKWISE_ROTATION          1
 #define COUNTERCLOCKWISE_ROTATION   0
@@ -29,7 +29,7 @@ void write_csv(std::string filename,  std::vector<std::string> dataset){
     for(int j = 0; j < dataset.size(); ++j)
     {
         myFile << dataset.at(j);
-        if(j != dataset.size() - 1) myFile << ","; // No comma at end of line
+        if(j != dataset.size() - 1) myFile << ","; 
     }
     myFile << "\n";
     myFile.close();

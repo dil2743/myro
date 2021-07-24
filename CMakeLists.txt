@@ -10,6 +10,7 @@ add_compile_options(-std=c++11)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
+  geometry_msgs
   message_generation
 )
 
@@ -70,6 +71,7 @@ add_message_files(
 generate_messages(
   DEPENDENCIES
   std_msgs
+  geometry_msgs
 )
 
 ################################################
@@ -104,7 +106,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS data
 #  LIBRARIES myro
- CATKIN_DEPENDS message_runtime roscpp std_msgs
+ CATKIN_DEPENDS message_runtime roscpp std_msgs geometry_msgs
 #  DEPENDS system_lib
 )
 
@@ -210,3 +212,7 @@ add_dependencies(readNode myro_generate_messages)
 add_executable(controlNode src/controlNode.cpp)
 target_link_libraries(controlNode ${catkin_LIBRARIES})
 add_dependencies(controlNode myro_generate_messages)
+
+add_executable(turtlebot_sim src/turtlebot_sim.cpp)
+target_link_libraries(turtlebot_sim ${catkin_LIBRARIES})
+add_dependencies(turtlebot_sim myro_generate_messages)
