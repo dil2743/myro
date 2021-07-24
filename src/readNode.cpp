@@ -9,7 +9,7 @@
 #include <iostream>
 
 
-std::string FILENAME = "/home/meditab/catkin_ws/src/myro/src/sensorData.csv"; // run the file from /myro/src folder otherwise there will be path error
+std::string FILENAME = "/home/meditab/catkin_ws/src/myro/data/sensorData.csv"; // run the file from /myro/src folder otherwise there will be path error
 
 std::vector<std::pair<std::string, std::vector<float>>> read_csv(std::string filename){
     // Reads a CSV file into a vector of <string, vector<float>> pairs where

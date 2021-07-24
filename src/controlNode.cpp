@@ -13,7 +13,7 @@
 #define DISTANCE_FROM_CG_TO_WHEEL   15
 #define PAEALLEL_DISTANCE_FROM_WALL 30
 
-std::string OUTPUT_FILE="/home/meditab/catkin_ws/src/myro/src/output.csv";
+std::string OUTPUT_FILE="/home/meditab/catkin_ws/src/myro/data/output.csv";
 
 const float distance_coverd_in_360_degree = 2 * M_PI * (DISTANCE_FROM_CG_TO_WHEEL) ;
 const float distance_covered_by_wheel_in_1_rotation = 2 * M_PI * ROBOT_WHEEL_DIAMETER/2 ;
