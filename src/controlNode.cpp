@@ -21,7 +21,7 @@ const float pulse_required_for_1_cm_rotion =  MOTOR_PPR / distance_covered_by_wh
 const float distance_covered_in_one_degree_rotation = distance_coverd_in_360_degree / 360 ;
 const float distance_covered_with_one_pulse = distance_covered_by_wheel_in_1_rotation / MOTOR_PPR ;
 const float pulse_required_per_degree = distance_covered_in_one_degree_rotation / distance_covered_with_one_pulse ;
-
+const float square_platform_dimension = SEPRATION_BETWEEN_SENSOR ;
 
 void write_csv(std::string filename,  std::vector<std::string> dataset){
     // Create an output filestream object
@@ -37,7 +37,7 @@ void write_csv(std::string filename,  std::vector<std::string> dataset){
 
 void senorDataCallback(const myro::sensorData::ConstPtr& msg)
 {
-    static int itteration = 0 ;
+    static int itteration = 1 ;
     float sensorOneDistance = msg->distance_sensor1;
     float sensorTwoDistance = msg->distance_sensor2;
 
@@ -56,8 +56,8 @@ void senorDataCallback(const myro::sensorData::ConstPtr& msg)
    std::string angle = std::to_string(abs(angleInDegree));
 
 
-  ROS_INFO("S1:%f S2:%f Angle:%f", msg->distance_sensor1 ,
-                                msg->distance_sensor2, angleInDegree);
+//   ROS_INFO("S1:%f S2:%f Angle:%f", msg->distance_sensor1 ,
+//                                 msg->distance_sensor2, angleInDegree);
     
   /* ******************************** Question 2: calculate the number of pulses to be given for M1, M2, M3 and M4
                         rtorotate the robot to maintain parallelity with the wall *************************************************************************/
@@ -78,7 +78,6 @@ void senorDataCallback(const myro::sensorData::ConstPtr& msg)
   * 
   */
     float pulse_required = abs(angleInDegree) * pulse_required_per_degree ;
-
     std::string M1 = std::to_string(pulse_required);
     std::string M2 = std::to_string(pulse_required);
     std::string M3 = std::to_string(pulse_required);
@@ -99,8 +98,28 @@ void senorDataCallback(const myro::sensorData::ConstPtr& msg)
     *
     */
 
+    float temp_angle = angleInDegree < 0 ? -1 * angleInDegree : angleInDegree ;
+    temp_angle = temp_angle * 3.1415927/180;
     float current_distance = std::min(msg->distance_sensor1,msg->distance_sensor2);
-    float required_distance = (PAEALLEL_DISTANCE_FROM_WALL - current_distance) ;
+    /* considering the bot rotate about Center of Gravity */
+    
+    float required_distance = (current_distance + tan(temp_angle)* square_platform_dimension/2)*sin(M_PI_2 - temp_angle);
+    
+    ROS_WARN("\nItterationCount: %d",itteration);
+    ROS_INFO("\n"
+    "Sensor 1 : %f \n"
+    "Sensor 2 : %f \n"
+    "AngleToRotate : %f \n"
+    "DistanceFromWall : %f \n"
+    "RequiredDisancteToMaintain30cmSepration %f \n",
+    sensorOneDistance,
+    sensorTwoDistance,
+    angleInDegree,
+    required_distance ,
+    30- required_distance);
+    
+    required_distance = (PAEALLEL_DISTANCE_FROM_WALL - required_distance) ;
+    
     float require_pulse_on_motor = abs(required_distance) * pulse_required_for_1_cm_rotion ;
 
     std::string requierd_direction = required_distance < 0 ? "clockwise" : "counterclockwise" ;
@@ -121,6 +140,7 @@ void senorDataCallback(const myro::sensorData::ConstPtr& msg)
     */
     std::vector <std::string> dataToStore = {angle , M1,M2,M3,M4,direction,dis_M1,dis_M2,dis_M3,dis_M4,requierd_direction };
     write_csv(OUTPUT_FILE, dataToStore );
+    itteration++;
 }
 
 int main(int argc, char **argv)
